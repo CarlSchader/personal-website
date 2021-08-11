@@ -1,0 +1,29 @@
+.background {
+    width: 100%;
+    height: 100%;
+    background-image: url("/background.jpg");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    position: fixed;
+}
+
+main {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+a {
+    color: #ffffff;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+pre {
+    background-color: #484848;
+}
+
+.scrollable {
+    overflow-y: auto;
+}
