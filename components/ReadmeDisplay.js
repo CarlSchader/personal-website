@@ -22,8 +22,8 @@ const components = {
     a: MarkdownLink,
 };
 
-export default function ReadmeDisplay({ url }) {
-    const { data, error } = useSWR(`/api/getReadme?url=${readmeUrl(url)}`, fetcher);
+export default function ReadmeDisplay({ url=null }) {
+    const { data, error } = useSWR(url ? `/api/getReadme?url=${readmeUrl(url)}` : '', fetcher);
 
     if (error) {
         return (

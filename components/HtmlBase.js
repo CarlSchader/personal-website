@@ -1,6 +1,8 @@
 import Head from 'next/head';
 import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
 import AppBar from './AppBar';
+import config from "../config/config.json"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -9,11 +11,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function HtmlBase({ children = [], title = "KeySpot" }) {
+export default function HtmlBase({ children = [], title = config.appName }) {
   const classes = useStyles();
 
   return (
-    <div className="background scrollable">
+    <div className="gradient scrollable">
       <AppBar />
       <Head>
         <title>{title}</title>
@@ -22,10 +24,8 @@ export default function HtmlBase({ children = [], title = "KeySpot" }) {
       </Head>
 
       <main className="main">
-        <div>
-          <div className={classes.root} >
-            {children}
-          </div>
+        <div className={classes.root}>
+          {children}
         </div>
       </main>
     </div>

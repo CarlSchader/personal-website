@@ -1,0 +1,8 @@
+[
+    {
+        "title": "KeySpot",
+        "url": "https://keyspot.app",
+        "hero": "https://keyspot.app/logo-black.png",
+        "description": "Portable secrets manager that can be used with any language, cloud provider, or system. Goodbye .env files!"
+    }
+]

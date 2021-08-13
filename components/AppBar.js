@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image'
-import { useUser } from '@auth0/nextjs-auth0';
 import { alpha, makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -33,9 +32,9 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import HomeIcon from '@material-ui/icons/Home';
 import Responsive from './Responsive';
-import languages from '../config/languages';
 import logo from '../public/logo.png';
-import AccessKeyContext from '../context/accessKeyContext';
+import paths, { StyleIcon } from '../config/paths';
+import config from '../config/config.json';
 
 const drawerWidth = 240;
 
@@ -157,15 +156,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const tabMap = {
-  // '/': 0,
-  '/docs': 0,
-  '/records': 1,
-};
+const tabList = ['/projects', '/dev'];
 
-export default function PrimarySearchAppBar({ title, currentTab }) {
-  const [accessKey, setAccessKey] = useContext(AccessKeyContext);
-  const { user, error, isLoading } = useUser();
+export default function PrimarySearchAppBar() {
   const router = useRouter();
 
   const classes = useStyles();
@@ -175,6 +168,9 @@ export default function PrimarySearchAppBar({ title, currentTab }) {
   const [searchString, setSearchString] = React.useState('');
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [docsListOpen, setDocsListOpen] = useState(true);
+
+  const pathBase = '/' + router.pathname.split('/')[1];
+  const pathObject = paths[pathBase];
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -219,7 +215,7 @@ export default function PrimarySearchAppBar({ title, currentTab }) {
         <Link key="0" href={`/api/subscription`} passHref >
           <MenuItem key="0" >
             Upgrade
-        </MenuItem>
+          </MenuItem>
         </Link>,
         <Link key="2" href="/api/auth/logout" passHref ><MenuItem key="2" >Logout</MenuItem></Link>
       ] :
@@ -229,34 +225,34 @@ export default function PrimarySearchAppBar({ title, currentTab }) {
   }
 
   const menuId = 'primary-search-account-menu';
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItems loggedIn={user} />
-    </Menu>
-  );
+  // const renderMenu = (
+  //   <Menu
+  //     anchorEl={anchorEl}
+  //     anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+  //     id={menuId}
+  //     keepMounted
+  //     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+  //     open={isMenuOpen}
+  //     onClose={handleMenuClose}
+  //   >
+  //     <MenuItems loggedIn={user} />
+  //   </Menu>
+  // );
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItems loggedIn={user} />
-    </Menu>
-  );
+  // const renderMobileMenu = (
+  //   <Menu
+  //     anchorEl={mobileMoreAnchorEl}
+  //     anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+  //     id={mobileMenuId}
+  //     keepMounted
+  //     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+  //     open={isMobileMenuOpen}
+  //     onClose={handleMobileMenuClose}
+  //   >
+  //     <MenuItems loggedIn={user} />
+  //   </Menu>
+  // );
 
   return (
     <div className={classes.grow}>
@@ -272,14 +268,21 @@ export default function PrimarySearchAppBar({ title, currentTab }) {
           {/* <Typography className={classes.title} variant="h6" noWrap>
             {title}
           </Typography> */}
-          <Link href="/">
+          <Responsive
+            desktop={
+              <Link href="/">
+                <a style={{ color: "white" }} ><Typography variant="h5">&lt;{config.appName}&gt;</Typography></a>
+              </Link>
+            }
+          />
+          {/* <Link href="/">
             <a>
               <Responsive
                 desktop={<Image height={32} width={102} src={logo} alt="logo" />}
               />
             </a>
-          </Link>
-          <div className={classes.search}>
+          </Link> */}
+          {/* <div className={classes.search}>
             <div className={classes.searchIcon}>
               <VpnKeyIcon />
             </div>
@@ -292,22 +295,33 @@ export default function PrimarySearchAppBar({ title, currentTab }) {
               }}
               inputProps={{ 'aria-label': 'search' }}
             />
-          </div>
+          </div> */}
           <Responsive
             desktop={
-              <Tabs value={tabMap[router.pathname]} >
-                <Link href="/docs" passHref>
-                  <Tab label="Docs" />
-                </Link>
-                <Link href="/records" passHref>
-                  <Tab label="records" />
-                </Link>
+              <Tabs value={tabList.indexOf(pathBase)} >
+                {tabList.map(path => (
+                  <Link key={path} href={path} passHref>
+                    <Tab label={<Typography variant="h6">{paths[path].name}</Typography>} />
+                  </Link>
+                ))}
               </Tabs>
             }
           />
           <div className={classes.grow} />
-          {user ? <Typography noWrap>{user.name}</Typography> : <></>}
-          <div className={classes.sectionDesktop}>
+          <Responsive
+            desktop={
+              pathObject ?
+                <><StyleIcon icon={pathObject.icon} style={{ size: '3rem' }} /><Typography variant="h4">{pathObject.name}</Typography></> :
+                <></>
+            }
+            mobile={
+              pathObject ?
+                <><StyleIcon icon={pathObject.icon} style={{ size: '2rem' }} /><Typography variant="h5">{pathObject.name}</Typography></> :
+                <></>
+            }
+          />
+          {/* {user ? <Typography noWrap>{user.name}</Typography> : <></>} */}
+          {/* <div className={classes.sectionDesktop}>
             {
               user ?
 
@@ -323,8 +337,8 @@ export default function PrimarySearchAppBar({ title, currentTab }) {
                 </IconButton> :
                 <Button color="inherit"><Link href="/api/auth/login" passHref >Login</Link></Button>
             }
-          </div>
-          <div className={classes.sectionMobile}>
+          </div> */}
+          {/* <div className={classes.sectionMobile}>
             <IconButton
               aria-label="show more"
               aria-controls={mobileMenuId}
@@ -334,7 +348,7 @@ export default function PrimarySearchAppBar({ title, currentTab }) {
             >
               <MoreIcon />
             </IconButton>
-          </div>
+          </div> */}
         </Toolbar>
       </AppBar>
       <Toolbar />
@@ -354,21 +368,17 @@ export default function PrimarySearchAppBar({ title, currentTab }) {
         </div>
         <Divider />
         <List>
-          <Link href='/' passHref>
-            <ListItem button key={'Home'}>
-              <ListItemIcon><HomeIcon /></ListItemIcon>
-              <ListItemText primary={'Home'} />
-            </ListItem>
-          </Link>
-          <Link href="/records" passHref >
-            <ListItem button key={'Records'}>
-              <ListItemIcon><SubjectIcon /></ListItemIcon>
-              <ListItemText primary={'Records'} />
-            </ListItem>
-          </Link>
+          {Object.keys(paths).map(path => (
+            <Link key={path} href={path} passHref>
+              <ListItem button key={paths[path].name}>
+                <ListItemIcon><StyleIcon icon={paths[path].icon} style={{ size: "1.75rem" }} /></ListItemIcon>
+                <ListItemText primary={paths[path].name} />
+              </ListItem>
+            </Link>
+          ))}
         </List>
-        <Divider />
-        <List>
+        {/* <Divider /> */}
+        {/* <List>
           <ListItem onClick={() => setDocsListOpen(!docsListOpen)} button key={'Docs'}>
             <ListItemIcon><DescriptionIcon /></ListItemIcon>
             <ListItemText primary={'Docs'} />
@@ -390,11 +400,11 @@ export default function PrimarySearchAppBar({ title, currentTab }) {
               })}
             </List>
           </Collapse>
-        </List>
+        </List> */}
         <Divider />
       </Drawer>
-      {renderMobileMenu}
-      {renderMenu}
+      {/* {renderMobileMenu} */}
+      {/* {renderMenu} */}
     </div>
   );
 }
