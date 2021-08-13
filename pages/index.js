@@ -6,6 +6,7 @@ import HtmlBase from "../components/HtmlBase";
 import { makeStyles } from '@material-ui/core/styles';
 import DevDiaryCard from '../components/DevDiaryCard';
 import getDiaries from "../lib/diaries";
+import SocialBar from "../components/SocialBar";
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -16,13 +17,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Home({ diary }) {
   const classes = useStyles();
-  
+
   return (
     <HtmlBase>
       <Container maxWidth="lg">
         <Grid container align="center" spacing={3}>
           <Grid item xs={12}>
             <Avatar className={classes.avatar} src="images/profile.jpg" />
+          </Grid>
+          <Grid item xs={12}>
+            <SocialBar />
           </Grid>
           <Grid item xs={12}>
             <Typography variant="h1">&lt;Code Chops&gt;</Typography>
@@ -32,7 +36,7 @@ export default function Home({ diary }) {
             <Typography variant="h4">My name is Carl Schader and this is my personal website where I share all things coding related.</Typography>
           </Grid>
           <Grid item xs={12}>
-          <Typography variant="h5">Check out my most recent dev diary!</Typography>
+            <Typography variant="h5">Check out my most recent dev diary!</Typography>
           </Grid>
           <Grid item xs={12}>
             <DevDiaryCard diary={diary} href={"/dev/" + diary.urlName} />

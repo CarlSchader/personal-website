@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import HtmlBase from '../../components/HtmlBase';
 import Markdown from '../../components/Markdown';
 import getDiaries from '../../lib/diaries';
+import SocialBar from '../../components/SocialBar';
 
 export default function Diary({ data, title, date, hero, previous, next, previousTitle, nextTitle }) {
   function DiaryNavs() {
@@ -35,6 +36,9 @@ export default function Diary({ data, title, date, hero, previous, next, previou
       <Container maxWidth="lg">
         <DiaryNavs />
         <Grid container maxWidth="lg" align="left">
+          <Grid item xs={12}>
+            <SocialBar />
+          </Grid>
           <Grid item xs={12}>
             <Typography variant="h6">Uploaded: {new Date(date).toLocaleDateString()}</Typography>
           </Grid>
