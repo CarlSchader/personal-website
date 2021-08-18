@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import DevDiaryCard from '../components/DevDiaryCard';
 import getDiaries from "../lib/diaries";
 import SocialBar from "../components/SocialBar";
+import config from "../config/config.json";
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -29,10 +30,10 @@ export default function Home({ diary }) {
             <SocialBar />
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="h1">&lt;Code Chops&gt;</Typography>
+            <Typography variant="h1">&lt;{config.appName}&gt;</Typography>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="h4">Welcome to Code Chops!</Typography>
+            <Typography variant="h4">Welcome to {config.appName}!</Typography>
             <Typography variant="h4">My name is Carl Schader and this is my personal website where I share all things coding related.</Typography>
           </Grid>
           <Grid item xs={12}>
