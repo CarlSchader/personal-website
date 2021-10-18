@@ -32,8 +32,10 @@ export default function Diary({ data, title, date, hero, previous, next, previou
 
   return (
     <HtmlBase>
-      <img src={hero} width="100%" height="100%" alt="diary hero" />
       <Container maxWidth="lg">
+        <Grid item xs={12}>
+          <img src={hero} width="100%" height="100%" alt="diary hero" />
+        </Grid>
         <DiaryNavs />
         <Grid container maxWidth="lg" align="left">
           <Grid item xs={12}>
