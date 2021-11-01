@@ -5,10 +5,10 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import HtmlBase from '../../components/HtmlBase';
 import Markdown from '../../components/Markdown';
-import getDiaries from '../../lib/diaries';
+import { getRegistry, parseComments, toUrlValid } from '../../lib/diaries';
 import SocialBar from '../../components/SocialBar';
 
-export default function Diary({ data, title, date, hero, previous, next, previousTitle, nextTitle }) {
+export default function Diary({ data, date, hero, previous, next, previousTitle, nextTitle }) {
   function DiaryNavs() {
     return (
       <Grid container maxWidth="lg">
@@ -54,24 +54,56 @@ export default function Diary({ data, title, date, hero, previous, next, previou
   );
 }
 
-export function getStaticProps(context) {
-  const diaries = getDiaries();
-  const index = diaries.findIndex(elem => elem.urlName === context.params.diary);
+export async function getServerSideProps(context) {
+  const registry = await getRegistry();
 
-  return {
-    props: {
-      ...diaries[index],
-      next: index < diaries.length - 1 ? diaries[index + 1].urlName : null,
-      nextTitle: index < diaries.length - 1 ? diaries[index + 1].title : null,
-      previous: index > 0 ? diaries[index - 1].urlName : null,
-      previousTitle: index > 0 ? diaries[index - 1].title : null,
-    },
+  const index = registry.findIndex(elem => elem.title.toLowerCase().replace(/\s+/g, '') === context.params.diary);
+
+  if (index < 0) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/dev',
+      },
+      props: {},
+    };
+  } else {
+    const diary = (await (await fetch(registry[index].url)).text());
+
+    const metaData = parseComments(diary);
+
+    return {
+      props: {
+        data: diary,
+        title: registry[index].title,
+        ...metaData,
+        next: index < registry.length - 1 ? toUrlValid(registry[index + 1].title) : null,
+        nextTitle: index < registry.length - 1 ? registry[index + 1].title : null,
+        previous: index > 0 ? toUrlValid(registry[index - 1].title) : null,
+        previousTitle: index > 0 ? registry[index - 1].title : null,
+      },
+    }
   }
 }
 
-export async function getStaticPaths() {
-  return {
-    paths: getDiaries().map(elem => ({ params: { diary: elem.urlName } })),
-    fallback: false,
-  }
-}
+// export function getStaticProps(context) {
+//   const diaries = getDiaries();
+//   const index = diaries.findIndex(elem => elem.urlName === context.params.diary);
+
+//   return {
+//     props: {
+//       ...diaries[index],
+      // next: index < diaries.length - 1 ? diaries[index + 1].urlName : null,
+      // nextTitle: index < diaries.length - 1 ? diaries[index + 1].title : null,
+      // previous: index > 0 ? diaries[index - 1].urlName : null,
+      // previousTitle: index > 0 ? diaries[index - 1].title : null,
+//     },
+//   }
+// }
+
+// export async function getStaticPaths() {
+//   return {
+//     paths: getDiaries().map(elem => ({ params: { diary: elem.urlName } })),
+//     fallback: false,
+//   }
+// }

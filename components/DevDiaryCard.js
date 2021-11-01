@@ -9,6 +9,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Responsive from './Responsive';
+import { parseComments } from '../lib/diaries';
 
 const useStyles = makeStyles({
   root: {
@@ -19,7 +20,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function MediaCard({ diary, href }) {
+export default function MediaCard({ title, date, description, hero, href }) {
   const classes = useStyles();
 
   return (
@@ -30,22 +31,22 @@ export default function MediaCard({ diary, href }) {
             desktop={
               <CardMedia
                 className={classes.media}
-                image={diary.hero}
+                image={hero}
               />
             }
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
-              {diary.title}
+              {title}
             </Typography>
-            { diary.date ?
+            { date ?
               <Typography variant="body2" color="textSecondary" component="p">
-              {new Date(diary.date).toLocaleDateString()}
+              {new Date(date).toLocaleDateString()}
             </Typography> :
             <></>
             }
             <Typography variant="body2" color="textSecondary" component="p">
-              {diary.description}
+              {description}
             </Typography>
           </CardContent>
         </CardActionArea>

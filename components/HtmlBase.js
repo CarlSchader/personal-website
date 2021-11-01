@@ -2,7 +2,8 @@ import Head from 'next/head';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AppBar from './AppBar';
-import config from "../config/config.json"
+import process from 'process';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -11,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function HtmlBase({ children = [], title = config.appName }) {
+export default function HtmlBase({ children = [], title = process.env.NEXT_PUBLIC_APP_NAME }) {
   const classes = useStyles();
 
   return (

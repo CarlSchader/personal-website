@@ -34,7 +34,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import Responsive from './Responsive';
 import logo from '../public/logo.png';
 import paths, { StyleIcon } from '../config/paths';
-import config from '../config/config.json';
+import process from 'process';
 
 const drawerWidth = 240;
 
@@ -271,7 +271,7 @@ export default function PrimarySearchAppBar() {
           <Responsive
             desktop={
               <Link href="/">
-                <a style={{ color: "white" }} ><Typography variant="h5">&lt;{config.appName}&gt;</Typography></a>
+                <a style={{ color: "white" }} ><Typography variant="h5">{process.env.NEXT_PUBLIC_APP_NAME}</Typography></a>
               </Link>
             }
           />

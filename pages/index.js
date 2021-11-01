@@ -5,9 +5,9 @@ import Avatar from "@material-ui/core/Avatar";
 import HtmlBase from "../components/HtmlBase";
 import { makeStyles } from '@material-ui/core/styles';
 import DevDiaryCard from '../components/DevDiaryCard';
-import getDiaries from "../lib/diaries";
+import { getRegistry, parseComments, toUrlValid } from "../lib/diaries";
 import SocialBar from "../components/SocialBar";
-import config from "../config/config.json";
+import process from 'process';
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -16,8 +16,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Home({ diary }) {
+export default function Home({ diary, diaryUrlName }) {
   const classes = useStyles();
+  const {title, date, description, hero} = parseComments(diary);
 
   return (
     <HtmlBase>
@@ -30,17 +31,17 @@ export default function Home({ diary }) {
             <SocialBar />
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="h1">&lt;{config.appName}&gt;</Typography>
+            <Typography variant="h1">{process.env.NEXT_PUBLIC_APP_NAME}</Typography>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="h4">Welcome to {config.appName}!</Typography>
+            <Typography variant="h4">Welcome!</Typography>
             <Typography variant="h4">My name is Carl Schader and this is my personal website where I share all things coding related.</Typography>
           </Grid>
           <Grid item xs={12}>
             <Typography variant="h5">Check out my most recent dev diary!</Typography>
           </Grid>
           <Grid item xs={12}>
-            <DevDiaryCard diary={diary} href={"/dev/" + diary.urlName} />
+            <DevDiaryCard title={title} date={date} description={description} hero={hero} href={"/dev/" + diaryUrlName} />
           </Grid>
         </Grid>
       </Container>
@@ -48,11 +49,15 @@ export default function Home({ diary }) {
   );
 }
 
-export function getStaticProps(context) {
-  const diaries = getDiaries();
+export async function getServerSideProps(context) {
+  const registry = await getRegistry();
+
+  const latestDiary = (await (await fetch(registry[registry.length - 1].url)).text());
+
   return {
     props: {
-      diary: diaries[diaries.length - 1]
+      diary: latestDiary,
+      diaryUrlName: toUrlValid(registry[registry.length - 1].title),
     },
-  }
+  };
 }

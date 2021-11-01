@@ -3,10 +3,32 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import HtmlBase from '../components/HtmlBase';
 import DevDiaryCard from '../components/DevDiaryCard';
-import getDiaries from '../lib/diaries';
+import { getRegistry, parseComments, toUrlValid } from '../lib/diaries';
 import SocialBar from '../components/SocialBar';
+import { useEffect, useState } from 'react';
 
-export default function Dev({ diaries }) {
+function DevDiaryCardHelper({ title, url }) {
+  const [diary, setDiary] = useState('');
+
+  useEffect(async function() {
+    const res = await fetch(url);
+
+    if (res.ok) {
+      const diary = await res.text();
+      setDiary(diary);
+    }
+  }, []);
+
+  if (!diary) {
+    return <div></div>;
+  } else {
+    const metaData = parseComments(diary);
+    return <DevDiaryCard title={metaData.title} date={metaData.date} description={metaData.description} hero={metaData.hero} href={"/dev/" + toUrlValid(title)} />;
+  }
+}
+
+export default function Dev({ registry }) {
+
   return (
     <HtmlBase>
       <Container maxWidth="lg">
@@ -17,17 +39,19 @@ export default function Dev({ diaries }) {
           <Grid item xs={12}>
             <SocialBar />
           </Grid>
-          {diaries.map(diary => <Grid key={diary.title} item xs={6}><DevDiaryCard diary={diary} href={"/dev/" + diary.urlName} /></Grid>)}
+          {registry.map(diary => <Grid key={diary.title} item xs={6}><DevDiaryCardHelper title={diary.title} url={diary.url} /></Grid>)}
         </Grid>
       </Container>
     </HtmlBase>
   );
 }
 
-export function getStaticProps(context) {
+export async function getServerSideProps(context) {
+  const registry = await getRegistry();
+
   return {
     props: {
-      diaries: getDiaries()
+      registry: registry,
     },
   }
 }

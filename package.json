@@ -18,7 +18,8 @@
     "react-icons": "^4.2.0",
     "react-markdown": "^6.0.3",
     "react-social-icons": "^5.5.1",
-    "react-syntax-highlighter": "^15.4.4"
+    "react-syntax-highlighter": "^15.4.4",
+    "swr": "^1.0.1"
   },
   "devDependencies": {
     "eslint": "7.32.0",

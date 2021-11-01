@@ -3,11 +3,10 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import HtmlBase from '../components/HtmlBase';
 import DevDiaryCard from '../components/DevDiaryCard';
-import getDiaries from '../lib/diaries';
 import projects from '../config/projects.json';
 import SocialBar from '../components/SocialBar';
 
-export default function Dev({ diaries }) {
+export default function Dev() {
   return (
     <HtmlBase>
       <Container maxWidth="lg">
@@ -18,17 +17,9 @@ export default function Dev({ diaries }) {
           <Grid item xs={12}>
             <SocialBar />
           </Grid>
-          {projects.map(project => <Grid key={project.title} item xs={12}><DevDiaryCard diary={project} href={project.url} /></Grid>)}
+          {projects.map(project => <Grid key={project.title} item xs={12}><DevDiaryCard title={project.title} date={project.date} description={project.description} hero={project.hero} href={project.url} /></Grid>)}
         </Grid>
       </Container>
     </HtmlBase>
   );
-}
-
-export function getStaticProps(context) {
-  return {
-    props: {
-      diaries: getDiaries()
-    },
-  }
 }
