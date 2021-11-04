@@ -2,6 +2,7 @@ import { IconContext } from 'react-icons/lib';
 import { AiFillHome } from 'react-icons/ai';
 import { RiBookFill } from 'react-icons/ri';
 import { BsCodeSlash } from 'react-icons/bs';
+import { MdFunctions } from 'react-icons/md';
 
 export function StyleIcon({ icon, style }) {
     return (
@@ -28,5 +29,9 @@ export default {
                 name: "KeySpot",
           }
         }
+    },
+    "/math": {
+        name: "Math",
+        icon: <MdFunctions />
     },
 }

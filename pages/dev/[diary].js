@@ -7,6 +7,7 @@ import HtmlBase from '../../components/HtmlBase';
 import Markdown from '../../components/Markdown';
 import { getRegistry, parseComments, toUrlValid } from '../../lib/diaries';
 import SocialBar from '../../components/SocialBar';
+import process from 'process';
 
 export default function Diary({ data, date, hero, previous, next, previousTitle, nextTitle }) {
   function DiaryNavs() {
@@ -55,7 +56,7 @@ export default function Diary({ data, date, hero, previous, next, previousTitle,
 }
 
 export async function getServerSideProps(context) {
-  const registry = await getRegistry();
+  const registry = await getRegistry(process.env.DIARY_REGISTRY_URL);
 
   const index = registry.findIndex(elem => elem.title.toLowerCase().replace(/\s+/g, '') === context.params.diary);
 
@@ -85,25 +86,3 @@ export async function getServerSideProps(context) {
     }
   }
 }
-
-// export function getStaticProps(context) {
-//   const diaries = getDiaries();
-//   const index = diaries.findIndex(elem => elem.urlName === context.params.diary);
-
-//   return {
-//     props: {
-//       ...diaries[index],
-      // next: index < diaries.length - 1 ? diaries[index + 1].urlName : null,
-      // nextTitle: index < diaries.length - 1 ? diaries[index + 1].title : null,
-      // previous: index > 0 ? diaries[index - 1].urlName : null,
-      // previousTitle: index > 0 ? diaries[index - 1].title : null,
-//     },
-//   }
-// }
-
-// export async function getStaticPaths() {
-//   return {
-//     paths: getDiaries().map(elem => ({ params: { diary: elem.urlName } })),
-//     fallback: false,
-//   }
-// }

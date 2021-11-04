@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function HtmlBase({ children = [], title = process.env.NEXT_PUBLIC_APP_NAME }) {
+export default function HtmlBase({ children = [], title = process.env.NEXT_PUBLIC_APP_NAME, head=[] }) {
   const classes = useStyles();
 
   return (
@@ -22,6 +22,7 @@ export default function HtmlBase({ children = [], title = process.env.NEXT_PUBLI
         <title>{title}</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
         <link rel="icon" href="/favicon.ico" />
+        {head}
       </Head>
 
       <main className="main">

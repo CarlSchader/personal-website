@@ -20,34 +20,38 @@ const useStyles = makeStyles({
   },
 });
 
-export default function MediaCard({ title="", date="", description="", hero="", href="" }) {
+export default function MediaCard({ title = "", date = "", hero = "", href = "" }) {
   const classes = useStyles();
 
   return (
     <Link href={href} passHref>
       <Card className={classes.root}>
         <CardActionArea>
-          <Responsive
-            desktop={
-              <CardMedia
-                className={classes.media}
-                image={hero}
-              />
-            }
-          />
+          {
+            hero ?
+              <Responsive
+                desktop={
+                  <CardMedia
+                    className={classes.media}
+                    image={hero}
+                  />
+                }
+              /> :
+              <></>
+          }
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
               {title}
             </Typography>
-            { date ?
+            {date ?
               <Typography variant="body2" color="textSecondary" component="p">
-              {new Date(date).toLocaleDateString()}
-            </Typography> :
-            <></>
+                {new Date(date).toLocaleDateString()}
+              </Typography> :
+              <></>
             }
-            <Typography variant="body2" color="textSecondary" component="p">
+            {/* <Typography variant="body2" color="textSecondary" component="p">
               {description}
-            </Typography>
+            </Typography> */}
           </CardContent>
         </CardActionArea>
         {/* <CardActions>

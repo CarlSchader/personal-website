@@ -6,6 +6,7 @@ import DevDiaryCard from '../components/DevDiaryCard';
 import { getRegistry, parseComments, toUrlValid } from '../lib/diaries';
 import SocialBar from '../components/SocialBar';
 import { useEffect, useState } from 'react';
+import process from 'process';
 
 function DevDiaryCardHelper({ title, url }) {
   const [diary, setDiary] = useState('');
@@ -47,7 +48,7 @@ export default function Dev({ registry }) {
 }
 
 export async function getServerSideProps(context) {
-  const registry = await getRegistry();
+  const registry = await getRegistry(process.env.DIARY_REGISTRY_URL);
 
   return {
     props: {

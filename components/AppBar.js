@@ -156,7 +156,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const tabList = ['/projects', '/dev'];
+const tabList = [];
+
+Object.keys(paths).forEach(path => {
+  if (path !== '/') {
+    tabList.push(path);
+  } 
+});
 
 export default function PrimarySearchAppBar() {
   const router = useRouter();
@@ -225,34 +231,7 @@ export default function PrimarySearchAppBar() {
   }
 
   const menuId = 'primary-search-account-menu';
-  // const renderMenu = (
-  //   <Menu
-  //     anchorEl={anchorEl}
-  //     anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-  //     id={menuId}
-  //     keepMounted
-  //     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-  //     open={isMenuOpen}
-  //     onClose={handleMenuClose}
-  //   >
-  //     <MenuItems loggedIn={user} />
-  //   </Menu>
-  // );
-
   const mobileMenuId = 'primary-search-account-menu-mobile';
-  // const renderMobileMenu = (
-  //   <Menu
-  //     anchorEl={mobileMoreAnchorEl}
-  //     anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-  //     id={mobileMenuId}
-  //     keepMounted
-  //     transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-  //     open={isMobileMenuOpen}
-  //     onClose={handleMobileMenuClose}
-  //   >
-  //     <MenuItems loggedIn={user} />
-  //   </Menu>
-  // );
 
   return (
     <div className={classes.grow}>
@@ -265,9 +244,6 @@ export default function PrimarySearchAppBar() {
               </IconButton>
             }
           />
-          {/* <Typography className={classes.title} variant="h6" noWrap>
-            {title}
-          </Typography> */}
           <Responsive
             desktop={
               <Link href="/">
@@ -275,27 +251,6 @@ export default function PrimarySearchAppBar() {
               </Link>
             }
           />
-          {/* <Link href="/">
-            <a>
-              <Responsive
-                desktop={<Image height={32} width={102} src={logo} alt="logo" />}
-              />
-            </a>
-          </Link> */}
-          {/* <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <VpnKeyIcon />
-            </div>
-            <InputBase
-              onChange={e => setSearchString(e.target.value)}
-              placeholder="Access Key"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div> */}
           <Responsive
             desktop={
               <Tabs value={tabList.indexOf(pathBase)} >
@@ -320,35 +275,6 @@ export default function PrimarySearchAppBar() {
                 <></>
             }
           />
-          {/* {user ? <Typography noWrap>{user.name}</Typography> : <></>} */}
-          {/* <div className={classes.sectionDesktop}>
-            {
-              user ?
-
-                <IconButton
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <Avatar alt={user.name} src={user.picture} />
-                </IconButton> :
-                <Button color="inherit"><Link href="/api/auth/login" passHref >Login</Link></Button>
-            }
-          </div> */}
-          {/* <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </div> */}
         </Toolbar>
       </AppBar>
       <Toolbar />
@@ -377,34 +303,8 @@ export default function PrimarySearchAppBar() {
             </Link>
           ))}
         </List>
-        {/* <Divider /> */}
-        {/* <List>
-          <ListItem onClick={() => setDocsListOpen(!docsListOpen)} button key={'Docs'}>
-            <ListItemIcon><DescriptionIcon /></ListItemIcon>
-            <ListItemText primary={'Docs'} />
-            {docsListOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={docsListOpen} timeout="auto" unmountOnExit >
-            <List>
-              {Object.keys(languages).map(name => {
-                return (
-                  <Link key={name} href={`/docs?language=${name}`} passHref >
-                    <ListItem button >
-                      <ListItemIcon>
-                        {languages[name].icon}
-                      </ListItemIcon>
-                      <ListItemText primary={name} />
-                    </ListItem>
-                  </Link>
-                );
-              })}
-            </List>
-          </Collapse>
-        </List> */}
         <Divider />
       </Drawer>
-      {/* {renderMobileMenu} */}
-      {/* {renderMenu} */}
     </div>
   );
 }
