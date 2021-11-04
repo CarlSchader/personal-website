@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import HtmlBase from '../../components/HtmlBase';
 import { getRegistry } from '../../lib/diaries';
-import { Document, Page, pdfjs } from 'react-pdf';
+import { Document, Page } from 'react-pdf';
+import * as pdfjsLib from "pdfjs-dist/build/pdf";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 
 export default function Math({ pdfUrl, /*data, date, hero, previous, next, previousTitle, nextTitle*/ }) {
   function useWindowSize() {
@@ -17,7 +19,7 @@ export default function Math({ pdfUrl, /*data, date, hero, previous, next, previ
     return size;
   }
 
-  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
   const [numPages, setNumPages] = useState(null);
   const [width] = useWindowSize();
 
