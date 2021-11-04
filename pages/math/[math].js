@@ -1,39 +1,31 @@
 import { useState, useEffect } from 'react';
 import HtmlBase from '../../components/HtmlBase';
 import { getRegistry } from '../../lib/diaries';
-import { Document, Page } from 'react-pdf';
-import * as pdfjsLib from "pdfjs-dist/build/pdf";
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 
-export default function Math({ pdfUrl, /*data, date, hero, previous, next, previousTitle, nextTitle*/ }) {
-  function useWindowSize() {
-    const [size, setSize] = useState([0, 0]);
-    useEffect(() => {
-      function updateSize() {
-        setSize([window.innerWidth, window.innerHeight]);
-      }
-      window.addEventListener('resize', updateSize);
-      updateSize();
-      return () => window.removeEventListener('resize', updateSize);
-    }, []);
-    return size;
-  }
+function useWindowSize() {
+  const [size, setSize] = useState([0, 0]);
+  useEffect(() => {
+    function updateSize() {
+      setSize([window.innerWidth, window.innerHeight]);
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+  return size;
+}
 
-  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-  const [numPages, setNumPages] = useState(null);
-  const [width] = useWindowSize();
-
-  function onPdfLoadSuccess({ numPages }) {
-    setNumPages(numPages);
-  }
+export default function Math({ pdfUrl }) {
+  const [width, height] = useWindowSize();
 
   return (
     <HtmlBase>
-      <Document file={pdfUrl} onLoadSuccess={onPdfLoadSuccess}>
-        {
-          Array(numPages).fill().map((_, i) => [<Page width={width} pageNumber={i + 1} key={i + 1} />, <br key={i + 1} />])
-        }
-      </Document>
+      <iframe
+        src={`${pdfUrl}#toolbar=0`}
+        width={width}
+        height={height * 0.75}
+      >
+      </iframe>
     </HtmlBase >
   );
 }
