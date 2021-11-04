@@ -1,35 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import HtmlBase from '../../components/HtmlBase';
 import { getRegistry } from '../../lib/diaries';
 import process from 'process';
-import fs from 'fs';
-import path from 'path';
+import * as htmlUtils from '../../lib/htmlUtils';
+import styled from 'styled-components';
+import useScript from '../../hooks/useScript';
 
-function useWindowSize() {
-  const [size, setSize] = useState([0, 0]);
+export default function Math({ styleString, contentString }) {
+  useScript("https://polyfill.io/v3/polyfill.min.js?features=es6");
+  useScript("https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js");
+
+  const Container = styled.div`
+    ${styleString}
+  `;
+  
   useEffect(() => {
-    function updateSize() {
-      setSize([window.innerWidth, window.innerHeight]);
+    try {
+      MathJax.typeset();
+    } catch (e) {
+      console.error(e);
     }
-    window.addEventListener('resize', updateSize);
-    updateSize();
-    return () => window.removeEventListener('resize', updateSize);
-  }, []);
-  return size;
-}
-
-export default function Math({ pdfPath }) {
-  const [width, height] = useWindowSize();
+  });
 
   return (
-    <HtmlBase>
-      <iframe
-        src={`/${pdfPath}#toolbar=0`}
-        width={width}
-        height={height * 0.875}
-      >
-      </iframe>
-    </HtmlBase >
+      <HtmlBase>
+        <Container>
+            <html dangerouslySetInnerHTML={{ __html: contentString }}></html>
+        </Container>
+      </HtmlBase>
   );
 }
 
@@ -48,22 +46,18 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const url = registry[index].url;
+  const contentUrl = registry[index].url;
 
-  const filePath = path.join('math', context.params.math + '.pdf');
-  const fileStream = fs.createWriteStream(path.join(process.cwd(), 'public', filePath));
-  
-  const res = await fetch(url);
+  const res = await fetch(contentUrl);
+  const htmlContent = await res.text();
 
-  await new Promise((resolve, reject) => {
-    res.body.pipe(fileStream);
-    res.body.on("error", reject);
-    fileStream.on("finish", resolve);
-  });
+  const styleString = htmlUtils.innerHtml(htmlUtils.parseTag(htmlContent, 'style'));
+  const contentString = htmlUtils.parseTag(htmlContent, 'body');
 
   return {
     props: {
-      pdfPath: filePath,
+      styleString,
+      contentString,
     },
   }
 }

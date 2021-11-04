@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AppBar from './AppBar';
 import process from 'process';
+import Script from 'next/script';
 
 
 const useStyles = makeStyles((theme) => ({
