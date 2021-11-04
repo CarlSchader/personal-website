@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import HtmlBase from '../../components/HtmlBase';
 import { getRegistry } from '../../lib/diaries';
+import process from 'process';
+import fs from 'fs';
+import path from 'path';
+import https from 'https';
+import http from 'http';
 
 function useWindowSize() {
   const [size, setSize] = useState([0, 0]);
@@ -15,15 +20,15 @@ function useWindowSize() {
   return size;
 }
 
-export default function Math({ pdfUrl }) {
+export default function Math({ pdfPath }) {
   const [width, height] = useWindowSize();
 
   return (
     <HtmlBase>
       <iframe
-        src={`${pdfUrl}#toolbar=0`}
+        src={`/${pdfPath}#toolbar=0`}
         width={width}
-        height={height * 0.75}
+        height={height * 0.875}
       >
       </iframe>
     </HtmlBase >
@@ -43,11 +48,34 @@ export async function getServerSideProps(context) {
       },
       props: {},
     };
+  }
+
+  const url = registry[index].url;
+
+  const filePath = path.join('math', context.params.math + '.pdf');
+  const file = fs.createWriteStream(path.join(process.cwd(), 'public', filePath));
+
+  const protocol = url.slice(0, url.indexOf(':'));
+
+  if (protocol === 'https') {
+    https.get(url, res => {
+      res.pipe(file);
+      file.on('finish', () => {
+        file.close();
+      })
+    });
   } else {
-    return {
-      props: {
-        pdfUrl: registry[index].url,
-      },
-    }
+    http.get(url, res => {
+      res.pipe(file);
+      file.on('finish', () => {
+        file.close();
+      })
+    });
+  }
+
+  return {
+    props: {
+      pdfPath: filePath,
+    },
   }
 }
