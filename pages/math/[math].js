@@ -53,25 +53,15 @@ export async function getServerSideProps(context) {
   const url = registry[index].url;
 
   const filePath = path.join('math', context.params.math + '.pdf');
-  const file = fs.createWriteStream(path.join(process.cwd(), 'public', filePath));
-
-  const protocol = url.slice(0, url.indexOf(':'));
-
-  if (protocol === 'https') {
-    https.get(url, res => {
-      res.pipe(file);
-      file.on('finish', () => {
-        file.close();
-      })
-    });
-  } else {
-    http.get(url, res => {
-      res.pipe(file);
-      file.on('finish', () => {
-        file.close();
-      })
-    });
-  }
+  const fileStream = fs.createWriteStream(path.join(process.cwd(), 'public', filePath));
+  
+  const res = await fetch(url);
+  
+  await new Promise((resolve, reject) => {
+    res.body.pipe(fileStream);
+    res.body.on("error", reject);
+    fileStream.on("finish", resolve);
+  });
 
   return {
     props: {
